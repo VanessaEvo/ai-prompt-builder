@@ -1,4 +1,4 @@
-# Contributing to AI Prompt Builder Pro
+# Contributing to AI Prompt Builder
 
 Thank you for your interest in contributing to AI Prompt Builder Pro! We welcome contributions from the community and are excited to see what you'll bring to the project.
 
