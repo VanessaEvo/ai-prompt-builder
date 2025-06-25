@@ -117,7 +117,7 @@ Watch your prompt build as you make selections, with smooth animations and insta
 
 ## 🤝 Contributing
 
-We welcome contributions! Here's how you can help:
+Contributions are very welcome! Here's how you can help:
 
 1. **Fork the repository**
 2. **Create a feature branch** (`git checkout -b feature/amazing-feature`)
