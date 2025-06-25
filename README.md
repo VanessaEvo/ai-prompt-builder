@@ -2,7 +2,7 @@
 
 A beautiful web application for creating professional AI prompts for image and video generation. Build comprehensive prompts with advanced controls, presets, and real-time preview.
 
-![AI Prompt Builder Pro](https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop)
+![AI Prompt Builder](https://drive.usercontent.google.com/download?id=1oAGVjluRug9aF5XIqhL4TcRQYbpFgyE3?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop)
 
 ## ✨ Features
 
@@ -134,15 +134,6 @@ We welcome contributions! Here's how you can help:
 - Maintain responsive design
 - Add smooth animations for better UX
 - Write clean, documented code
-
-## 📋 Roadmap
-
-- [ ] **AI Integration**: Direct integration with popular AI art platforms
-- [ ] **Prompt Templates**: Community-contributed prompt templates
-- [ ] **Advanced Filters**: More granular control over prompt elements
-- [ ] **Collaboration**: Share and collaborate on prompts with others
-- [ ] **API**: RESTful API for programmatic prompt generation
-- [ ] **Mobile App**: Native mobile applications
 
 ## 🐛 Bug Reports & Feature Requests
 
