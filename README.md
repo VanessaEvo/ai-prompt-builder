@@ -133,12 +133,11 @@ We welcome contributions! Here's how you can help:
 - Add smooth animations for better UX
 - Write clean, documented code
 
-## 🐛 Bug Reports & Feature Requests
+## 🐛 Bug Reports
 
-Found a bug or have a feature idea? We'd love to hear from you!
+Found a bug ?
 
 - **Bug Reports**: [Create an issue](https://github.com/VanessaEvo/ai-prompt-builder-pro/issues) with detailed steps to reproduce
-- **Feature Requests**: [Start a discussion](https://github.com/VanessaEvo/ai-prompt-builder-pro/discussions) about your idea
 
 ## 👨‍💻 Author
 
