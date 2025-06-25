@@ -100,8 +100,6 @@ Generated Prompt: "A majestic dragon, Digital Art, in Mountain peak, Dramatic li
 - **Education**: Learn about prompt engineering and AI art techniques
 - **Professional Work**: Create consistent, high-quality prompts for commercial projects
 
-## 📸 Screenshots
-
 ### Main Interface
 The clean, organized interface makes prompt building intuitive and enjoyable.
 
