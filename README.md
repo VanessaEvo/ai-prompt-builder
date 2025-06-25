@@ -125,14 +125,6 @@ Contributions are very welcome! Here's how you can help:
 4. **Push to the branch** (`git push origin feature/amazing-feature`)
 5. **Open a Pull Request**
 
-### Development Guidelines
-
-- Follow TypeScript best practices
-- Use Tailwind CSS for styling
-- Maintain responsive design
-- Add smooth animations for better UX
-- Write clean, documented code
-
 ## 🐛 Bug Reports
 
 Found a bug ?
