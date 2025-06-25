@@ -2,7 +2,7 @@
 
 A beautiful web application for creating professional AI prompts for image and video generation. Build comprehensive prompts with advanced controls, presets, and real-time preview.
 
-![AI Prompt Builder](https://drive.usercontent.google.com/download?id=1oAGVjluRug9aF5XIqhL4TcRQYbpFgyE3?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop)
+![AI Prompt Builder](https://drive.usercontent.google.com/download?id=1oAGVjluRug9aF5XIqhL4TcRQYbpFgyE3)
 
 ## ✨ Features
 
