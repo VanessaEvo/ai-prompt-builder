@@ -45,7 +45,7 @@ A beautiful web application for creating professional AI prompts for image and v
 1. **Clone the repository**
    ```bash
    git clone https://github.com/VanessaEvo/ai-prompt-builder.git
-   cd ai-prompt-builder-pro
+   cd ai-prompt-builder
    ```
 
 2. **Install dependencies**
