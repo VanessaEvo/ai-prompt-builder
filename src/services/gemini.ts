@@ -1,5 +1,3 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
 export interface EnhancedPromptResult {
   enhancedPrompt: string;
   error?: string;
@@ -18,9 +16,6 @@ export const enhancePrompt = async (
       return { enhancedPrompt: originalPrompt };
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-
     const prompt = `
       You are an expert prompt engineer for AI image generation models like Midjourney, Stable Diffusion, and DALL-E.
       Please enhance the following prompt to make it more descriptive, artistic, and detailed while keeping the original intent.
@@ -29,9 +24,34 @@ export const enhancePrompt = async (
       Original prompt: "${originalPrompt}"
     `;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [{ text: prompt }],
+            },
+          ],
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!text) {
+      throw new Error('Invalid response format from Gemini API');
+    }
 
     return { enhancedPrompt: text.trim() };
   } catch (error: unknown) {
