@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Copy, Download, RefreshCw, Sparkles, Camera, Palette, Sun, Users, Map, Wand2, ChevronRight, Star, Zap, Eye, Settings, Save, Share2, History, Shuffle, Heart, Github } from 'lucide-react';
+import { Copy, Download, RefreshCw, Sparkles, Camera, Palette, Sun, Users, Map, Wand2, ChevronRight, Star, Zap, Eye, Settings, Save, History, Shuffle, Heart, Github, Key } from 'lucide-react';
+import { enhancePrompt } from '../services/gemini';
 
 interface PromptState {
   subject: string;
@@ -217,10 +218,19 @@ export default function PromptBuilder() {
   const [showHistory, setShowHistory] = useState(false);
   const [animatePrompt, setAnimatePrompt] = useState(false);
 
+  // Gemini Settings State
+  const [showSettings, setShowSettings] = useState(false);
+  const [geminiApiKey, setGeminiApiKey] = useState('');
+  const [isEnhancing, setIsEnhancing] = useState(false);
+
   useEffect(() => {
     const saved = localStorage.getItem('aiPromptBuilder_savedPrompts');
     if (saved) {
       setSavedPrompts(JSON.parse(saved));
+    }
+    const savedKey = localStorage.getItem('gemini_api_key');
+    if (savedKey) {
+      setGeminiApiKey(savedKey);
     }
   }, []);
 
@@ -327,6 +337,32 @@ export default function PromptBuilder() {
     setSavePromptName('');
   };
 
+  const saveSettings = () => {
+    localStorage.setItem('gemini_api_key', geminiApiKey);
+    setShowSettings(false);
+  };
+
+  const handleEnhance = async () => {
+    if (!geminiApiKey) {
+      setShowSettings(true);
+      return;
+    }
+
+    if (!promptState.subject.trim()) return;
+
+    setIsEnhancing(true);
+    try {
+      const result = await enhancePrompt(promptState.subject, geminiApiKey);
+      if (result.error) {
+        alert(result.error);
+      } else {
+        updatePromptState('subject', result.enhancedPrompt);
+      }
+    } finally {
+      setIsEnhancing(false);
+    }
+  };
+
   const loadPrompt = (savedPrompt: SavedPrompt) => {
     setPromptState(savedPrompt.state);
     setShowHistory(false);
@@ -334,6 +370,7 @@ export default function PromptBuilder() {
     setTimeout(() => setAnimatePrompt(false), 300);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const loadPreset = (preset: any) => {
     setPromptState(preset.state);
     setAnimatePrompt(true);
@@ -348,12 +385,14 @@ export default function PromptBuilder() {
       if (key === 'specialEffects' || key === 'accessories') {
         const items = options[key as keyof typeof options] as string[];
         const randomCount = Math.floor(Math.random() * 3) + 1;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         randomState[key as keyof PromptState] = items
           .sort(() => 0.5 - Math.random())
           .slice(0, randomCount) as any;
       } else {
         const items = options[key as keyof typeof options] as string[];
         if (Math.random() > 0.3) { // 70% chance to include each field
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           randomState[key as keyof PromptState] = items[Math.floor(Math.random() * items.length)] as any;
         }
       }
@@ -374,13 +413,27 @@ export default function PromptBuilder() {
                 <Users className="h-4 w-4 mr-2 text-purple-600" />
                 Main Subject
               </label>
-              <textarea
-                value={promptState.subject}
-                onChange={(e) => updatePromptState('subject', e.target.value)}
-                placeholder="Describe the main subject (e.g., 'A majestic lion', 'A futuristic robot', 'A beautiful woman')"
-                className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 bg-gradient-to-r from-white to-gray-50"
-                rows={3}
-              />
+              <div className="relative">
+                <textarea
+                  value={promptState.subject}
+                  onChange={(e) => updatePromptState('subject', e.target.value)}
+                  placeholder="Describe the main subject (e.g., 'A majestic lion', 'A futuristic robot', 'A beautiful woman')"
+                  className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 bg-gradient-to-r from-white to-gray-50 pr-14"
+                  rows={3}
+                />
+                <button
+                  onClick={handleEnhance}
+                  disabled={isEnhancing || !promptState.subject.trim()}
+                  className={`absolute bottom-3 right-3 p-2 rounded-lg transition-all duration-300 ${
+                    isEnhancing
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:shadow-md transform hover:scale-105'
+                  }`}
+                  title="Magic Enhance with Gemini"
+                >
+                  <Sparkles className={`h-5 w-5 ${isEnhancing ? 'animate-spin' : ''}`} />
+                </button>
+              </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -753,11 +806,18 @@ export default function PromptBuilder() {
               <History className="h-4 w-4" />
               <span>History</span>
             </button>
+            <button
+              onClick={() => setShowSettings(true)}
+              className="flex items-center space-x-2 bg-white text-gray-700 border border-gray-200 px-6 py-3 rounded-full hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              <Settings className="h-4 w-4" />
+              <span>Settings</span>
+            </button>
           </div>
           
           {/* Presets */}
           <div className="flex flex-wrap justify-center gap-4 mt-6">
-            {presetPrompts.map((preset, index) => (
+            {presetPrompts.map((preset) => (
               <button
                 key={preset.name}
                 onClick={() => loadPreset(preset)}
@@ -1002,6 +1062,54 @@ export default function PromptBuilder() {
                 ))}
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Settings Dialog */}
+      {showSettings && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-gray-900 flex items-center">
+                <Settings className="h-5 w-5 mr-2 text-gray-600" />
+                Settings
+              </h3>
+              <button
+                onClick={() => setShowSettings(false)}
+                className="text-gray-500 hover:text-gray-700 transition-colors duration-200"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Google Gemini API Key</label>
+                <div className="relative">
+                  <Key className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                  <input
+                    type="password"
+                    value={geminiApiKey}
+                    onChange={(e) => setGeminiApiKey(e.target.value)}
+                    placeholder="Enter your API Key"
+                    className="w-full pl-10 p-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  />
+                </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  Your key is stored locally in your browser and used only for the "Magic Enhance" feature.
+                </p>
+              </div>
+
+              <div className="flex space-x-3 pt-4">
+                <button
+                  onClick={saveSettings}
+                  className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
+                >
+                  Save Settings
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
