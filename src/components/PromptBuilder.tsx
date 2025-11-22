@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Copy, Download, RefreshCw, Sparkles, Camera, Palette, Sun, Users, Map, Wand2, ChevronRight, Star, Zap, Eye, Settings, Save, History, Shuffle, Heart, Github, Key } from 'lucide-react';
+import { Copy, Download, RefreshCw, Sparkles, Camera, Palette, Sun, Users, Map, Wand2, ChevronRight, Star, Zap, Eye, Settings, Save, History, Shuffle, Heart, Github, Key, Trash2 } from 'lucide-react';
 import { enhancePrompt } from '../services/gemini';
+import { promptService, SavedPrompt as CloudSavedPrompt } from '../services/supabase';
 
 interface PromptState {
   subject: string;
@@ -31,6 +32,7 @@ interface SavedPrompt {
   prompt: string;
   timestamp: Date;
   state: PromptState;
+  is_favorite?: boolean;
 }
 
 const initialState: PromptState = {
@@ -224,15 +226,25 @@ export default function PromptBuilder() {
   const [isEnhancing, setIsEnhancing] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem('aiPromptBuilder_savedPrompts');
-    if (saved) {
-      setSavedPrompts(JSON.parse(saved));
-    }
+    loadSavedPrompts();
     const savedKey = localStorage.getItem('gemini_api_key');
     if (savedKey) {
       setGeminiApiKey(savedKey);
     }
   }, []);
+
+  const loadSavedPrompts = async () => {
+    const prompts = await promptService.getAll();
+    const formatted = prompts.map(p => ({
+      id: p.id,
+      name: p.name,
+      prompt: p.prompt,
+      timestamp: new Date(p.created_at),
+      state: p.state as PromptState,
+      is_favorite: p.is_favorite
+    }));
+    setSavedPrompts(formatted);
+  };
 
   const updatePromptState = useCallback((key: keyof PromptState, value: string | string[]) => {
     setPromptState(prev => ({ ...prev, [key]: value }));
@@ -319,20 +331,20 @@ export default function PromptBuilder() {
     URL.revokeObjectURL(url);
   };
 
-  const savePrompt = () => {
+  const savePrompt = async () => {
     if (!savePromptName.trim()) return;
-    
-    const newPrompt: SavedPrompt = {
-      id: Date.now().toString(),
-      name: savePromptName,
-      prompt: generatePrompt(),
-      timestamp: new Date(),
-      state: { ...promptState }
-    };
-    
-    const updated = [newPrompt, ...savedPrompts];
-    setSavedPrompts(updated);
-    localStorage.setItem('aiPromptBuilder_savedPrompts', JSON.stringify(updated));
+
+    const prompt = generatePrompt();
+    const saved = await promptService.create(
+      savePromptName,
+      prompt,
+      promptState as Record<string, any>
+    );
+
+    if (saved) {
+      await loadSavedPrompts();
+    }
+
     setShowSaveDialog(false);
     setSavePromptName('');
   };
@@ -368,6 +380,20 @@ export default function PromptBuilder() {
     setShowHistory(false);
     setAnimatePrompt(true);
     setTimeout(() => setAnimatePrompt(false), 300);
+  };
+
+  const deletePrompt = async (id: string) => {
+    const success = await promptService.delete(id);
+    if (success) {
+      await loadSavedPrompts();
+    }
+  };
+
+  const toggleFavorite = async (id: string, currentFavorite: boolean) => {
+    const success = await promptService.toggleFavorite(id, !currentFavorite);
+    if (success) {
+      await loadSavedPrompts();
+    }
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1046,18 +1072,34 @@ export default function PromptBuilder() {
                 {savedPrompts.map((saved) => (
                   <div key={saved.id} className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-300">
                     <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-semibold text-gray-900">{saved.name}</h4>
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => toggleFavorite(saved.id, saved.is_favorite || false)}
+                          className="text-gray-400 hover:text-red-500 transition-colors duration-200"
+                        >
+                          <Heart className={`h-5 w-5 ${saved.is_favorite ? 'fill-red-500 text-red-500' : ''}`} />
+                        </button>
+                        <h4 className="font-semibold text-gray-900">{saved.name}</h4>
+                      </div>
                       <span className="text-xs text-gray-500">
                         {saved.timestamp.toLocaleDateString()}
                       </span>
                     </div>
                     <p className="text-sm text-gray-600 mb-3 line-clamp-2">{saved.prompt}</p>
-                    <button
-                      onClick={() => loadPrompt(saved)}
-                      className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 text-sm"
-                    >
-                      Load Prompt
-                    </button>
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => loadPrompt(saved)}
+                        className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 text-sm"
+                      >
+                        Load Prompt
+                      </button>
+                      <button
+                        onClick={() => deletePrompt(saved.id)}
+                        className="bg-red-100 text-red-600 px-4 py-2 rounded-lg hover:bg-red-200 transition-all duration-300 text-sm"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>

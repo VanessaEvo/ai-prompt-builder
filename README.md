@@ -27,7 +27,9 @@ A powerful, beautiful web application for creating professional AI prompts for i
 - **Artist Style References**: 22 famous artist styles to mimic
 
 ### 💾 **Productivity Features**
-- **Save & Load**: Save unlimited prompts locally and load them anytime
+- **Cloud Sync**: Save unlimited prompts to the cloud with automatic synchronization across devices
+- **Favorite Prompts**: Mark your best prompts as favorites for quick access
+- **Delete Management**: Remove unwanted prompts with a single click
 - **Preset Templates**: 3 quick-start templates for Portrait Photography, Fantasy Art, and Anime Character
 - **Export Options**: Copy to clipboard or download as text file
 - **Randomize**: Generate random prompts for instant inspiration
@@ -87,7 +89,7 @@ To use the Magic Enhance feature powered by Google Gemini:
 - **Vite** - Lightning-fast build tool and dev server
 - **Lucide React** - Beautiful, consistent icon library
 - **Google Gemini AI** - Advanced AI model (gemini-2.5-flash) for prompt enhancement
-- **Local Storage API** - Browser-based storage for saved prompts and settings
+- **Supabase** - Cloud database for prompt storage and synchronization
 
 ## 📱 Usage
 
@@ -218,7 +220,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [ ] Add prompt strength/weight controls
 - [ ] Support for video generation prompts
 - [ ] Multi-language support
-- [ ] Cloud sync for saved prompts
+- [x] Cloud sync for saved prompts
 - [ ] Community prompt library
 - [ ] Advanced prompt templates marketplace
 - [ ] Integration with popular AI art platforms
