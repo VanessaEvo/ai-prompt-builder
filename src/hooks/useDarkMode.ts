@@ -2,8 +2,13 @@ import { useEffect, useState } from 'react';
 
 export function useDarkMode() {
   const [isDark, setIsDark] = useState(() => {
-    const saved = localStorage.getItem('darkMode');
-    return saved ? JSON.parse(saved) : false;
+    if (typeof window === 'undefined') return false;
+    try {
+      const saved = localStorage.getItem('darkMode');
+      return saved ? JSON.parse(saved) : false;
+    } catch {
+      return false;
+    }
   });
 
   useEffect(() => {
@@ -13,10 +18,17 @@ export function useDarkMode() {
     } else {
       root.classList.remove('dark');
     }
-    localStorage.setItem('darkMode', JSON.stringify(isDark));
+
+    try {
+      localStorage.setItem('darkMode', JSON.stringify(isDark));
+    } catch (error) {
+      console.error('Failed to save dark mode preference:', error);
+    }
   }, [isDark]);
 
-  const toggleDarkMode = () => setIsDark(!isDark);
+  const toggleDarkMode = () => {
+    setIsDark(prev => !prev);
+  };
 
   return { isDark, toggleDarkMode };
 }

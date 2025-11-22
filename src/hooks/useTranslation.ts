@@ -3,12 +3,21 @@ import { translations, Translation } from '../i18n/translations';
 
 export function useTranslation() {
   const [language, setLanguage] = useState(() => {
-    const saved = localStorage.getItem('language');
-    return saved || 'en';
+    if (typeof window === 'undefined') return 'en';
+    try {
+      const saved = localStorage.getItem('language');
+      return saved || 'en';
+    } catch {
+      return 'en';
+    }
   });
 
   useEffect(() => {
-    localStorage.setItem('language', language);
+    try {
+      localStorage.setItem('language', language);
+    } catch (error) {
+      console.error('Failed to save language preference:', error);
+    }
   }, [language]);
 
   const t = translations[language] || translations.en;
