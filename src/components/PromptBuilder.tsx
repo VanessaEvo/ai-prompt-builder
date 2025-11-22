@@ -1,7 +1,9 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Copy, Download, RefreshCw, Sparkles, Camera, Palette, Sun, Users, Map, Wand2, ChevronRight, Star, Zap, Eye, Settings, Save, History, Shuffle, Heart, Github, Key, Trash2 } from 'lucide-react';
+import { Copy, Download, RefreshCw, Sparkles, Camera, Palette, Sun, Users, Map, Wand2, ChevronRight, Star, Zap, Eye, Settings, Save, History, Shuffle, Heart, Github, Key, Trash2, Moon } from 'lucide-react';
 import { enhancePrompt } from '../services/gemini';
 import { promptService, SavedPrompt as CloudSavedPrompt } from '../services/supabase';
+import { useDarkMode } from '../hooks/useDarkMode';
+import { useTranslation, languages } from '../hooks/useTranslation';
 
 interface PromptState {
   subject: string;
@@ -211,6 +213,9 @@ const presetPrompts = [
 ];
 
 export default function PromptBuilder() {
+  const { isDark, toggleDarkMode } = useDarkMode();
+  const { t, language, changeLanguage } = useTranslation();
+
   const [promptState, setPromptState] = useState<PromptState>(initialState);
   const [activeCategory, setActiveCategory] = useState('subject');
   const [copiedMessage, setCopiedMessage] = useState(false);
@@ -791,12 +796,12 @@ export default function PromptBuilder() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden transition-colors duration-300">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-40 left-40 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 dark:bg-purple-900 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-yellow-300 dark:bg-yellow-900 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-40 left-40 w-80 h-80 bg-pink-300 dark:bg-pink-900 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
       </div>
 
       <div className="container mx-auto px-4 py-8 relative z-10">
@@ -808,12 +813,11 @@ export default function PromptBuilder() {
               <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full animate-ping"></div>
             </div>
             <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent">
-              AI Prompt Builder Pro
+              {t.header.title}
             </h1>
           </div>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Create stunning, professional prompts for AI image and video generation. 
-            Build comprehensive prompts with advanced controls, presets, and real-time preview.
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            {t.header.subtitle}
           </p>
           
           {/* Quick Actions */}
@@ -823,21 +827,28 @@ export default function PromptBuilder() {
               className="flex items-center space-x-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-full hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg"
             >
               <Shuffle className="h-4 w-4" />
-              <span>Randomize</span>
+              <span>{t.header.randomize}</span>
             </button>
             <button
               onClick={() => setShowHistory(true)}
               className="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 rounded-full hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 transform hover:scale-105 shadow-lg"
             >
               <History className="h-4 w-4" />
-              <span>History</span>
+              <span>{t.header.history}</span>
             </button>
             <button
               onClick={() => setShowSettings(true)}
-              className="flex items-center space-x-2 bg-white text-gray-700 border border-gray-200 px-6 py-3 rounded-full hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 shadow-lg"
+              className="flex items-center space-x-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 px-6 py-3 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
             >
               <Settings className="h-4 w-4" />
-              <span>Settings</span>
+              <span>{t.header.settings}</span>
+            </button>
+            <button
+              onClick={toggleDarkMode}
+              className="flex items-center space-x-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 px-6 py-3 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+              title="Toggle Dark Mode"
+            >
+              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
           </div>
           
@@ -847,7 +858,7 @@ export default function PromptBuilder() {
               <button
                 key={preset.name}
                 onClick={() => loadPreset(preset)}
-                className="bg-white/80 backdrop-blur-sm border border-gray-200 px-4 py-2 rounded-full hover:bg-white hover:shadow-md transition-all duration-300 transform hover:scale-105 text-sm font-medium text-gray-700"
+                className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 px-4 py-2 rounded-full hover:bg-white dark:hover:bg-gray-700 hover:shadow-md transition-all duration-300 transform hover:scale-105 text-sm font-medium text-gray-700 dark:text-gray-200"
               >
                 {preset.name}
               </button>
@@ -858,10 +869,10 @@ export default function PromptBuilder() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 sticky top-8 border border-white/20">
-              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                <Settings className="h-5 w-5 mr-2 text-purple-600" />
-                Categories
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 sticky top-8 border border-white/20 dark:border-gray-700/20">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
+                <Settings className="h-5 w-5 mr-2 text-purple-600 dark:text-purple-400" />
+                {t.categories.subject}
               </h2>
               <nav className="space-y-3">
                 {categories.map((category) => {
@@ -873,7 +884,7 @@ export default function PromptBuilder() {
                       className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-left transition-all duration-300 transform hover:scale-105 ${
                         activeCategory === category.id
                           ? `bg-gradient-to-r ${category.color} text-white shadow-lg`
-                          : 'text-gray-600 hover:bg-gray-50 hover:shadow-md'
+                          : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-md'
                       }`}
                     >
                       <Icon className="h-5 w-5" />
@@ -890,7 +901,7 @@ export default function PromptBuilder() {
 
           {/* Main Content */}
           <div className="lg:col-span-2">
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-white/20">
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-white/20 dark:border-gray-700/20">
               <div className="flex items-center mb-8">
                 {(() => {
                   const activeIcon = categories.find(cat => cat.id === activeCategory)?.icon;
@@ -902,7 +913,7 @@ export default function PromptBuilder() {
                     </div>
                   );
                 })()}
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {categories.find(cat => cat.id === activeCategory)?.name}
                 </h2>
               </div>
@@ -914,22 +925,20 @@ export default function PromptBuilder() {
 
           {/* Preview Panel */}
           <div className="lg:col-span-1">
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 sticky top-8 border border-white/20">
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 sticky top-8 border border-white/20 dark:border-gray-700/20">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900 flex items-center">
-                  <Eye className="h-5 w-5 mr-2 text-purple-600" />
-                  Live Preview
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center">
+                  <Eye className="h-5 w-5 mr-2 text-purple-600 dark:text-purple-400" />
+                  {t.preview.title}
                 </h3>
                 <Zap className="h-5 w-5 text-yellow-500 animate-pulse" />
               </div>
               
-              <div className={`bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 mb-6 min-h-[300px] border-2 border-dashed border-gray-200 transition-all duration-300 ${animatePrompt ? 'scale-105 border-purple-300 bg-gradient-to-br from-purple-50 to-pink-50' : ''}`}>
-                <p className="text-sm text-gray-800 whitespace-pre-wrap break-words leading-relaxed">
+              <div className={`bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 rounded-xl p-6 mb-6 min-h-[300px] border-2 border-dashed border-gray-200 dark:border-gray-600 transition-all duration-300 ${animatePrompt ? 'scale-105 border-purple-300 dark:border-purple-600 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900 dark:to-pink-900' : ''}`}>
+                <p className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap break-words leading-relaxed">
                   {generatePrompt() || (
-                    <span className="text-gray-400 italic">
-                      Your generated prompt will appear here as you make selections...
-                      <br /><br />
-                      ✨ Start by selecting a category and filling in the details!
+                    <span className="text-gray-400 dark:text-gray-500 italic">
+                      {t.preview.empty}
                     </span>
                   )}
                 </p>
@@ -941,7 +950,7 @@ export default function PromptBuilder() {
                   className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-3 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
                 >
                   <Copy className="h-4 w-4" />
-                  <span>{copiedMessage ? '✅ Copied!' : 'Copy Prompt'}</span>
+                  <span>{copiedMessage ? '✅ Copied!' : t.buttons.copy}</span>
                 </button>
                 
                 <div className="grid grid-cols-2 gap-3">
@@ -950,7 +959,7 @@ export default function PromptBuilder() {
                     className="flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-4 py-3 rounded-xl hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
                   >
                     <Save className="h-4 w-4" />
-                    <span>Save</span>
+                    <span>{t.buttons.save}</span>
                   </button>
                   
                   <button
@@ -958,7 +967,7 @@ export default function PromptBuilder() {
                     className="flex items-center justify-center space-x-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 py-3 rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
                   >
                     <Download className="h-4 w-4" />
-                    <span>Export</span>
+                    <span>{t.buttons.download}</span>
                   </button>
                 </div>
                 
@@ -967,7 +976,7 @@ export default function PromptBuilder() {
                   className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-gray-600 to-gray-700 text-white px-4 py-3 rounded-xl hover:from-gray-700 hover:to-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg"
                 >
                   <RefreshCw className="h-4 w-4" />
-                  <span>Reset All</span>
+                  <span>{t.buttons.reset}</span>
                 </button>
               </div>
             </div>
@@ -1023,14 +1032,14 @@ export default function PromptBuilder() {
       {/* Save Dialog */}
       {showSaveDialog && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl transform transition-all duration-300 scale-100">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Save Prompt</h3>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-md w-full shadow-2xl transform transition-all duration-300 scale-100">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">{t.savedPrompts.saveDialogTitle}</h3>
             <input
               type="text"
               value={savePromptName}
               onChange={(e) => setSavePromptName(e.target.value)}
-              placeholder="Enter prompt name..."
-              className="w-full p-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent mb-6"
+              placeholder={t.savedPrompts.promptNamePlaceholder}
+              className="w-full p-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent mb-6 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               autoFocus
             />
             <div className="flex space-x-3">
@@ -1039,13 +1048,13 @@ export default function PromptBuilder() {
                 disabled={!savePromptName.trim()}
                 className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Save
+                {t.buttons.save}
               </button>
               <button
                 onClick={() => setShowSaveDialog(false)}
-                className="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-xl hover:bg-gray-300 transition-all duration-300"
+                className="flex-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition-all duration-300"
               >
-                Cancel
+                {t.buttons.cancel}
               </button>
             </div>
           </div>
@@ -1055,22 +1064,22 @@ export default function PromptBuilder() {
       {/* History Dialog */}
       {showHistory && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-2xl">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-2xl">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-gray-900">Saved Prompts</h3>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">{t.savedPrompts.title}</h3>
               <button
                 onClick={() => setShowHistory(false)}
-                className="text-gray-500 hover:text-gray-700 transition-colors duration-200"
+                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors duration-200"
               >
                 ✕
               </button>
             </div>
             {savedPrompts.length === 0 ? (
-              <p className="text-gray-500 text-center py-8">No saved prompts yet.</p>
+              <p className="text-gray-500 dark:text-gray-400 text-center py-8">{t.savedPrompts.empty}</p>
             ) : (
               <div className="space-y-4">
                 {savedPrompts.map((saved) => (
-                  <div key={saved.id} className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-300">
+                  <div key={saved.id} className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:shadow-md transition-all duration-300 bg-white dark:bg-gray-700/50">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center space-x-2">
                         <button
@@ -1079,23 +1088,23 @@ export default function PromptBuilder() {
                         >
                           <Heart className={`h-5 w-5 ${saved.is_favorite ? 'fill-red-500 text-red-500' : ''}`} />
                         </button>
-                        <h4 className="font-semibold text-gray-900">{saved.name}</h4>
+                        <h4 className="font-semibold text-gray-900 dark:text-gray-100">{saved.name}</h4>
                       </div>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
                         {saved.timestamp.toLocaleDateString()}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">{saved.prompt}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">{saved.prompt}</p>
                     <div className="flex space-x-2">
                       <button
                         onClick={() => loadPrompt(saved)}
                         className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 text-sm"
                       >
-                        Load Prompt
+                        {t.buttons.load}
                       </button>
                       <button
                         onClick={() => deletePrompt(saved.id)}
-                        className="bg-red-100 text-red-600 px-4 py-2 rounded-lg hover:bg-red-200 transition-all duration-300 text-sm"
+                        className="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-4 py-2 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 transition-all duration-300 text-sm"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -1111,15 +1120,15 @@ export default function PromptBuilder() {
       {/* Settings Dialog */}
       {showSettings && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-md w-full shadow-2xl">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-gray-900 flex items-center">
-                <Settings className="h-5 w-5 mr-2 text-gray-600" />
-                Settings
+              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center">
+                <Settings className="h-5 w-5 mr-2 text-gray-600 dark:text-gray-400" />
+                {t.settings.title}
               </h3>
               <button
                 onClick={() => setShowSettings(false)}
-                className="text-gray-500 hover:text-gray-700 transition-colors duration-200"
+                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors duration-200"
               >
                 ✕
               </button>
@@ -1127,20 +1136,51 @@ export default function PromptBuilder() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Google Gemini API Key</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t.settings.apiKey}</label>
                 <div className="relative">
                   <Key className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                   <input
                     type="password"
                     value={geminiApiKey}
                     onChange={(e) => setGeminiApiKey(e.target.value)}
-                    placeholder="Enter your API Key"
-                    className="w-full pl-10 p-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder={t.settings.apiKeyPlaceholder}
+                    className="w-full pl-10 p-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   />
                 </div>
-                <p className="text-xs text-gray-500 mt-2">
-                  Your key is stored locally in your browser and used only for the "Magic Enhance" feature.
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                  {t.settings.apiKeyHelp}
                 </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t.settings.language}</label>
+                <select
+                  value={language}
+                  onChange={(e) => changeLanguage(e.target.value)}
+                  className="w-full p-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                >
+                  {languages.map((lang) => (
+                    <option key={lang.code} value={lang.code}>
+                      {lang.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">{t.settings.darkMode}</span>
+                <button
+                  onClick={toggleDarkMode}
+                  className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
+                    isDark ? 'bg-purple-600' : 'bg-gray-300'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                      isDark ? 'translate-x-7' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
               </div>
 
               <div className="flex space-x-3 pt-4">
@@ -1148,7 +1188,7 @@ export default function PromptBuilder() {
                   onClick={saveSettings}
                   className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
                 >
-                  Save Settings
+                  {t.buttons.saveSettings}
                 </button>
               </div>
             </div>

@@ -215,11 +215,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔮 Roadmap
 
-- [ ] Add dark mode theme
+- [x] Add dark mode theme
 - [ ] Implement prompt variations generator
 - [ ] Add prompt strength/weight controls
 - [ ] Support for video generation prompts
-- [ ] Multi-language support
+- [x] Multi-language support
 - [x] Cloud sync for saved prompts
 - [ ] Community prompt library
 - [ ] Advanced prompt templates marketplace
