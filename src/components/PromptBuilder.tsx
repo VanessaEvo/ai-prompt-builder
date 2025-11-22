@@ -984,50 +984,6 @@ export default function PromptBuilder() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="relative z-10 mt-16 border-t border-white/20 bg-white/10 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="flex items-center space-x-4 mb-4 md:mb-0">
-              <div className="flex items-center space-x-2">
-                <Sparkles className="h-6 w-6 text-purple-600" />
-                <span className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  AI Prompt Builder Pro
-                </span>
-              </div>
-            </div>
-            
-            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6 text-sm text-gray-600">
-              <div className="flex items-center space-x-2">
-                <span>Made with</span>
-                <Heart className="h-4 w-4 text-red-500 animate-pulse" />
-                <span>by</span>
-                <a 
-                  href="https://github.com/VanessaEvo" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex items-center space-x-1 text-purple-600 hover:text-purple-800 transition-colors duration-200 font-medium"
-                >
-                  <Github className="h-4 w-4" />
-                  <span>ShinX</span>
-                </a>
-              </div>
-              
-              <div className="hidden md:block w-px h-4 bg-gray-300"></div>
-              
-              <div className="text-center md:text-left">
-                <span>© 2025 ShinX. All rights reserved.</span>
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-6 pt-6 border-t border-white/20 text-center">
-            <p className="text-xs text-gray-500">
-              A powerful tool for creating professional AI prompts for image and video generation
-            </p>
-          </div>
-        </div>
-      </footer>
 
       {/* Save Dialog */}
       {showSaveDialog && (
