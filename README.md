@@ -1,4 +1,4 @@
-# 🎨 AI Prompt Builder Pro
+# 🎨 AI Prompt Builder
 
 A powerful, modular web application for creating professional AI prompts for image and video generation. Build comprehensive prompts with 6 categories, multi-AI provider enhancement, undo/redo, search/filter history, export/import, and full PWA support.
 
@@ -130,7 +130,7 @@ Keys are saved to `localStorage` and never leave your browser (except as the Bea
 
 ## 📱 PWA — Install as App
 
-AI Prompt Builder Pro is a fully installable Progressive Web App.
+AI Prompt Builder is a fully installable Progressive Web App.
 
 ### Chrome / Edge (Desktop & Android)
 1. Open the app in your browser
@@ -296,8 +296,6 @@ This project is licensed under the **MIT License** — see [LICENSE](LICENSE) fo
 ---
 
 <div align="center">
-
-**⭐ Star this repo if you find it helpful! ⭐**
 
 Made with ❤️ by [ShinX](https://github.com/VanessaEvo)
 
