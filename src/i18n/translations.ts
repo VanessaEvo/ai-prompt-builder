@@ -81,7 +81,7 @@ export interface Translation {
 export const translations: Record<string, Translation> = {
   en: {
     header: {
-      title: 'AI Prompt Builder Pro',
+      title: 'AI Prompt Builder',
       subtitle: 'Create stunning, professional prompts for AI image and video generation. Build comprehensive prompts with advanced controls, presets, and real-time preview.',
       randomize: 'Randomize',
       history: 'History',
@@ -160,7 +160,7 @@ export const translations: Record<string, Translation> = {
   },
   es: {
     header: {
-      title: 'Generador de Prompts IA Pro',
+      title: 'Generador de Prompts IA',
       subtitle: 'Crea prompts impresionantes y profesionales para generación de imágenes y videos con IA. Construye prompts completos con controles avanzados, plantillas y vista previa en tiempo real.',
       randomize: 'Aleatorio',
       history: 'Historial',
@@ -239,7 +239,7 @@ export const translations: Record<string, Translation> = {
   },
   fr: {
     header: {
-      title: 'Générateur de Prompts IA Pro',
+      title: 'Générateur de Prompts IA',
       subtitle: 'Créez des prompts époustouflants et professionnels pour la génération d\'images et de vidéos par IA. Créez des prompts complets avec des contrôles avancés, des préréglages et un aperçu en temps réel.',
       randomize: 'Aléatoire',
       history: 'Historique',
