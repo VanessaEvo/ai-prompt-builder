@@ -2,7 +2,7 @@
 
 A powerful, modular web application for creating professional AI prompts for image and video generation. Build comprehensive prompts with 6 categories, multi-AI provider enhancement, undo/redo, search/filter history, export/import, and full PWA support.
 
-![AI Prompt Builder](https://drive.usercontent.google.com/download?id=1eePNleZUA_YDJELm-qVqMUMcF9M17DD5)
+<img width="783" height="610" alt="Capture" src="https://github.com/user-attachments/assets/f0f4a554-6042-4022-b0c4-bdedc5ad30bb" />
 
 ## ✨ Features
 
