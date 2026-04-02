@@ -116,3 +116,21 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Vite build output
+dist
+dist-ssr
+
+# Test coverage output
+coverage
+*.lcov
+
+# Build logs
+build.log
+*.log
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
